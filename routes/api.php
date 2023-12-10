@@ -44,12 +44,12 @@ Route::group([
     Route::put('/cherks/{id}', [CherkController::class, 'update']);
 
     Route::get('/totals', [TotalController::class, 'index']);
-    Route::put('/totals/{id}', [TotalController::class, '']);
+    // Route::put('/totals/{id}', [TotalController::class, '']);
 
     Route::get('/my-costs', [MyCostController::class, 'index']);
-    Route::put('/my-costs/{id}', [MyCostController::class, 'update']);
+    // Route::put('/my-costs/{id}', [MyCostController::class, 'update']);
 
     Route::get('/ts-costs', [TsCostController::class, 'index']);
-    Route::put('/ts-costs/{id}', [TsCostController::class, 'update']);
+    // Route::put('/ts-costs/{id}', [TsCostController::class, 'update']);
 });
 
