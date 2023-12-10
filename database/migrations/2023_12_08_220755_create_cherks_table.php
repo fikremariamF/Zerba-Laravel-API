@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cherks', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->float('sold', 8, 2)->default(0); // For example, 8 digits in total and 2 after the decimal point
-            $table->float('percentage', 5, 2)->default(0); 
+            $table->double('sold')->default(0); // For example, 8 digits in total and 2 after the decimal point
+            $table->double('percentage')->default(0); 
             $table->unsignedBigInteger('sprint_id'); // Assuming sprint_id is an unsigned big integer
             $table->foreign('sprint_id')->references('id')->on('sprints');
             $table->timestamps();

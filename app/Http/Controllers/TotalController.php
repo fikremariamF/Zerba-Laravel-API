@@ -27,7 +27,7 @@ class TotalController extends Controller
         $totals = DB::table('totals')
             ->join('cherks', 'totals.cherk_id', '=', 'cherks.id')
             ->where('totals.sprint_id', $activeSprint->id)
-            ->select('totals.id', 'totals.date', 'cherks.sold as cherk_sold', 'totals.bergamod', 'totals.sprint_id')
+            ->select('totals.id', 'totals.date', 'totals.sold', 'cherks.sold as cherk', 'totals.bergamod', 'totals.sprint_id')
             ->get();
 
         return response()->json($totals);
@@ -54,7 +54,7 @@ class TotalController extends Controller
 
         $total->sold += $request->sold;
         $total->bergamod += $request->bergamod;
-
+        $total->save();
         return response()->json($total);
     }
 }

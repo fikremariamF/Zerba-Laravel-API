@@ -85,6 +85,13 @@ class SprintController extends Controller
         return response()->json($sprint, 201);
     }
 
+    public function getInactiveSprints()
+    {
+        $inactiveSprints = Sprint::where('is_active', false)->get();
+
+        return response()->json($inactiveSprints);
+    }
+
     /**
      * Deactivate the specified sprint.
      */
@@ -115,6 +122,23 @@ class SprintController extends Controller
 
         $sprint->delete();
         return response()->json(null, 204);
+    }
+
+    public function getSprintData($sprintId)
+    {
+        $foams = Foam::where('sprint_id', $sprintId)->get();
+        $cherks = Cherk::where('sprint_id', $sprintId)->get();
+        $totals = Total::where('sprint_id', $sprintId)->get();
+        $myCosts = MyCost::where('sprint_id', $sprintId)->get();
+        $tsCosts = TsCost::where('sprint_id', $sprintId)->get();
+
+        return response()->json([
+            'foams' => $foams,
+            'cherks' => $cherks,
+            'totals' => $totals,
+            'my_costs' => $myCosts,
+            'ts_costs' => $tsCosts
+        ]);
     }
 }
 
