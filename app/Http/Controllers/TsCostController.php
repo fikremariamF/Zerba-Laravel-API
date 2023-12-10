@@ -40,7 +40,24 @@ class TsCostController extends Controller
     }
 
 
-    public function update(Request $resuest, $id)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'cost' => 'required|numeric'
+        ]);
+
+        $tsCost = TsCost::findOrFail($id);
+
+        $sprintIsActive = Sprint::where('id', $tsCost->sprint_id)
+            ->where('is_active', true)
+            ->exists();
+
+        if (!$sprintIsActive) {
+            return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
+        }
+
+        $tsCost->spent += $request->cost;
+        $tsCost->save();
+        return response()->json($tsCost);
     }
 }

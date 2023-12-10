@@ -39,6 +39,25 @@ class MyCostController extends Controller
         return response()->json($myCosts);
     }
 
-    public function update(Request $resuest, $id){}
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'cost' => 'required|numeric'
+        ]);
+
+        $myCost = MyCost::findOrFail($id);
+
+        $sprintIsActive = Sprint::where('id', $myCost->sprint_id)
+            ->where('is_active', true)
+            ->exists();
+
+        if (!$sprintIsActive) {
+            return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
+        }
+
+        $myCost->spent += $request->cost;
+        $myCost->save();
+        return response()->json($myCost);
+    }
 
 }

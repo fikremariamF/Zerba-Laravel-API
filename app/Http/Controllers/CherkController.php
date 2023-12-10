@@ -56,7 +56,6 @@ class CherkController extends Controller
         // Perform the calculations and update
         $cherk->sold += $request->sold;
         $cherk->percentage += $request->sold * ($request->profit / 100);
-        $cherk->net = $cherk->sold + $cherk->percentage;
 
         $cherk->save();
 

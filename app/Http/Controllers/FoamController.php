@@ -56,7 +56,6 @@ class FoamController extends Controller
         // Perform the calculations and update
         $foam->sold += $request->sold;
         $foam->percentage += $request->sold * ($request->profit / 100);
-        $foam->net = $foam->sold + $foam->percentage;
 
         $foam->save();
 
