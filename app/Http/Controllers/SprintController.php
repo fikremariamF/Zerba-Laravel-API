@@ -35,14 +35,15 @@ class SprintController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+        $date = Carbon::parse($request->input('startDate'))->format('Y-m-d');
 
         $sprint = Sprint::create([
-            'startDate' => $validator->validated()['startDate'],
+            'startDate' => $date,
             'user_id' => $user->id
         ]);
 
         if (!$sprint->id) {
-            return response()->json(['error' => 'Failed to create sprint.', 'sprint'=> $sprint], 500);
+            return response()->json(['error' => 'Failed to create sprint.', 'sprint' => $sprint], 500);
         }
 
         $startDate = Carbon::parse($sprint->startDate);
