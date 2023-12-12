@@ -88,10 +88,19 @@ class SprintController extends Controller
 
     public function getInactiveSprints()
     {
-        $inactiveSprints = Sprint::where('is_active', false)->get();
+        $inactiveSprints = Sprint::where('is_active', false)
+            ->get()
+            ->makeHidden(['created_at', 'updated_at']) // Optionally hide timestamps
+            ->toArray();
+
+        foreach ($inactiveSprints as $key => $sprint) {
+            $inactiveSprints[$key]['startDate'] = substr($sprint['startDate'], 0, 10);
+        }
 
         return response()->json($inactiveSprints);
     }
+
+
 
     /**
      * Deactivate the specified sprint.
