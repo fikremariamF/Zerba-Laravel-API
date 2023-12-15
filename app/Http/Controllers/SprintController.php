@@ -11,6 +11,7 @@ use App\Models\Total;
 use App\Models\MyCost;
 use App\Models\TsCost;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SprintController extends Controller
 {
@@ -138,17 +139,69 @@ class SprintController extends Controller
     {
         $foams = Foam::where('sprint_id', $sprintId)->get();
         $cherks = Cherk::where('sprint_id', $sprintId)->get();
-        $totals = Total::where('sprint_id', $sprintId)->get();
         $myCosts = MyCost::where('sprint_id', $sprintId)->get();
         $tsCosts = TsCost::where('sprint_id', $sprintId)->get();
+
+        $totals = DB::table('totals')
+            ->join('cherks', 'totals.cherk_id', '=', 'cherks.id')
+            ->where('totals.sprint_id', $sprintId)
+            ->select('totals.id', 'totals.date', 'totals.sold', 'cherks.sold as cherk', 'totals.bergamod', 'totals.sprint_id')
+            ->get();
+
+        $Bnet = $foams->sum(function ($cherk) {
+            return $cherk->sold - $cherk->percentage;
+        });
+
+        $Snet = $totals->sum(function ($total) {
+            return $total->sold - $total->cherk - $total->bergamod;
+        });
+
+        $tsCost = $tsCosts->sum('spent');
+
+        $myCost = $myCosts->sum('spent');
+
+        $myProfit = $foams->sum('percentage') + $cherks->sum('percentage');
+
+        $initialDebt = $this->getInitialDebt($sprintId);
+
+        $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
 
         return response()->json([
             'foams' => $foams,
             'cherks' => $cherks,
             'totals' => $totals,
             'my_costs' => $myCosts,
-            'ts_costs' => $tsCosts
+            'ts_costs' => $tsCosts,
+            'net' => [
+                'Bnet' => $Bnet,
+                'initialDebt' => $initialDebt,
+                'Snet' => $Snet + $tsCost,
+                'TotNet' => $TotNet
+            ],
+            'PersonalProfit' => [
+                'Mycost' => $myCost,
+                'MyProfit' => $myProfit,
+                'NetProfit' => $myCost - $myProfit
+            ]
         ]);
     }
+
+    public function getInitialDebt($sprintId)
+    {
+        $initialDebt = 0;
+        while ($sprintId) {
+            $sprint = Sprint::where('id', '<', $sprintId)->where('is_active', false)->latest('id')->first();
+
+            if (!$sprint)
+                break;
+
+            $initialDebt += $sprint->TotNet;
+
+            $sprintId = $sprint->id;
+        }
+
+        return $initialDebt;
+    }
+
 }
 
