@@ -40,6 +40,8 @@ Route::group([
     Route::get("sprint", [SprintController::class, 'getSprints']);
     Route::get('/inactive-sprints', [SprintController::class, 'getInactiveSprints']);
     Route::get('/sprint-report/{sprintId}', [SprintController::class, 'getSprintData']);
+    Route::get('/sprint/personal-expense', [SprintController::class, 'getPersonalExpenseData']);
+    Route::get('/sprint/expense-data', [SprintController::class, 'getSprintExpenseData']);
 
     Route::get('/foams', [FoamController::class, 'index']);
     Route::put('/foams/{id}', [FoamController::class, 'update']);

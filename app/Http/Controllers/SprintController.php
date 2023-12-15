@@ -203,5 +203,89 @@ class SprintController extends Controller
         return $initialDebt;
     }
 
+    public function getPersonalExpenseData()
+    {
+        $user = auth()->user();
+
+        $activeSprintExists = Sprint::where('is_active', true)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if (!$activeSprintExists) {
+            return response()->json(['error' => 'No active sprint found for the user.'], 404);
+        }
+
+        $activeSprint = Sprint::where('is_active', true)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$activeSprint) {
+            return response()->json(['error' => 'No active sprint found for the user.'], 404);
+        }
+
+        $foams = Foam::where('sprint_id', $activeSprint->id)->get();
+        $cherks = Cherk::where('sprint_id', $activeSprint->id)->get();
+        $myCosts = MyCost::where('sprint_id', $activeSprint->id)->get();
+
+        $myProfit = $foams->sum('percentage') + $cherks->sum('percentage');
+        $myCost = $myCosts->sum('spent');
+
+        return response()->json([
+            'PersonalProfit' => [
+                'Mycost' => $myCost,
+                'MyProfit' => $myProfit,
+                'NetProfit' => $myCost - $myProfit
+            ]
+        ]);
+    }
+
+    public function getSprintExpenseData(){
+        $user = auth()->user();
+
+        $activeSprintExists = Sprint::where('is_active', true)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if (!$activeSprintExists) {
+            return response()->json(['error' => 'No active sprint found for the user.'], 404);
+        }
+
+        $activeSprint = Sprint::where('is_active', true)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$activeSprint) {
+            return response()->json(['error' => 'No active sprint found for the user.'], 404);
+        }
+
+        $foams = Foam::where('sprint_id', $activeSprint->id)->get();
+        $tsCosts = TsCost::where('sprint_id', $activeSprint->id)->get();
+        $totals = DB::table('totals')
+            ->join('cherks', 'totals.cherk_id', '=', 'cherks.id')
+            ->where('totals.sprint_id', $activeSprint->id)
+            ->select('totals.id', 'totals.date', 'totals.sold', 'cherks.sold as cherk', 'totals.bergamod', 'totals.sprint_id')
+            ->get();
+
+        $Bnet = $foams->sum(function ($foam) {
+            return $foam->sold - $foam->percentage;
+        });
+
+        $Snet = $totals->sum(function ($total) {
+            return $total->sold - $total->cherk - $total->bergamod;
+        });
+
+        $initialDebt = $this->getInitialDebt($activeSprint->id);
+        $tsCost = $tsCosts->sum('spent');
+        $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
+
+        return response()->json([
+            'net' => [
+                'Bnet' => $Bnet,
+                'initialDebt' => $initialDebt,
+                'Snet' => $Snet + $tsCost,
+                'TotNet' => $TotNet
+            ],
+        ]);
+    }
 }
 
