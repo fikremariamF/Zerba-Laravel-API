@@ -8,6 +8,7 @@ use App\Models\Sprint;
 
 class FoamController extends Controller
 {
+    
     public function index()
     {
         $user = auth()->user();
