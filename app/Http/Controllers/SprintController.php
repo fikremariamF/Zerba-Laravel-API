@@ -137,6 +137,11 @@ class SprintController extends Controller
 
     public function getSprintData($sprintId)
     {
+        $sprint = Sprint::find($sprintId);
+        if (!$sprint) {
+            return response()->json(['error' => 'No sprint found for the user.'], 404);
+        }
+
         $foams = Foam::where('sprint_id', $sprintId)->get();
         $cherks = Cherk::where('sprint_id', $sprintId)->get();
         $myCosts = MyCost::where('sprint_id', $sprintId)->get();
@@ -166,6 +171,9 @@ class SprintController extends Controller
 
         $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
 
+        $startDate = $sprint->startDate;
+        $endDate = Carbon::parse($startDate)->addDays(10);
+
         return response()->json([
             'foams' => $foams,
             'cherks' => $cherks,
@@ -173,12 +181,16 @@ class SprintController extends Controller
             'my_costs' => $myCosts,
             'ts_costs' => $tsCosts,
             'net' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
                 'Bnet' => $Bnet,
                 'initialDebt' => $initialDebt,
                 'Snet' => $Snet + $tsCost,
                 'TotNet' => $TotNet
             ],
             'PersonalProfit' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
                 'Mycost' => $myCost,
                 'MyProfit' => $myProfit,
                 'NetProfit' => $myCost - $myProfit
@@ -230,8 +242,13 @@ class SprintController extends Controller
         $myProfit = $foams->sum('percentage') + $cherks->sum('percentage');
         $myCost = $myCosts->sum('spent');
 
+        $startDate = $activeSprint->startDate;
+        $endDate = Carbon::parse($startDate)->addDays(10);
+
         return response()->json([
             'PersonalProfit' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
                 'Mycost' => $myCost,
                 'MyProfit' => $myProfit,
                 'NetProfit' => $myCost - $myProfit
@@ -278,8 +295,13 @@ class SprintController extends Controller
         $tsCost = $tsCosts->sum('spent');
         $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
 
+        $startDate = $activeSprint->startDate;
+        $endDate = Carbon::parse($startDate)->addDays(10);
+
         return response()->json([
             'net' => [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
                 'Bnet' => $Bnet,
                 'initialDebt' => $initialDebt,
                 'Snet' => $Snet + $tsCost,

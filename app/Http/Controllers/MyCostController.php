@@ -59,5 +59,4 @@ class MyCostController extends Controller
         $myCost->save();
         return response()->json($myCost);
     }
-
 }
