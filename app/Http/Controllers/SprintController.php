@@ -181,16 +181,16 @@ class SprintController extends Controller
             'my_costs' => $myCosts,
             'ts_costs' => $tsCosts,
             'net' => [
-                'startDate' => $startDate,
-                'endDate' => $endDate,
+                'startDate' => substr($startDate, 0, 10),
+                'endDate' => substr($endDate, 0, 10),
                 'Bnet' => $Bnet,
                 'initialDebt' => $initialDebt,
                 'Snet' => $Snet + $tsCost,
                 'TotNet' => $TotNet
             ],
             'PersonalProfit' => [
-                'startDate' => $startDate,
-                'endDate' => $endDate,
+                'startDate' => substr($startDate, 0, 10),
+                'endDate' => substr($endDate, 0, 10),
                 'Mycost' => $myCost,
                 'MyProfit' => $myProfit,
                 'NetProfit' => $myCost - $myProfit
@@ -247,8 +247,8 @@ class SprintController extends Controller
 
         return response()->json([
             'PersonalProfit' => [
-                'startDate' => $startDate,
-                'endDate' => $endDate,
+                'startDate' => substr($startDate, 0, 10),
+                'endDate' => substr($endDate, 0, 10),
                 'Mycost' => $myCost,
                 'MyProfit' => $myProfit,
                 'NetProfit' => $myCost - $myProfit
@@ -297,11 +297,11 @@ class SprintController extends Controller
 
         $startDate = $activeSprint->startDate;
         $endDate = Carbon::parse($startDate)->addDays(10);
-
+        
         return response()->json([
             'net' => [
-                'startDate' => $startDate,
-                'endDate' => $endDate,
+                'startDate' => substr($startDate, 0, 10),
+                'endDate' => substr($endDate, 0, 10),
                 'Bnet' => $Bnet,
                 'initialDebt' => $initialDebt,
                 'Snet' => $Snet + $tsCost,
