@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('totals', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->double('sold', 8, 2)->default(0); // For example, 8 digits in total and 2 after the decimal point
+            $table->double('sold', 15, 2)->default(0); // For example, 8 digits in total and 2 after the decimal point
             $table->unsignedBigInteger('cherk_id'); // 5 digits in total and 2 after the decimal point
             $table->foreign('cherk_id')->references('id')->on('cherks');
-            $table->double('bergamod', 8, 2)->default(0);
+            $table->double('bergamod', 15, 2)->default(0);
             $table->unsignedBigInteger('sprint_id'); // Assuming sprint_id is an unsigned big integer
             $table->foreign('sprint_id')->references('id')->on('sprints');
             $table->timestamps();

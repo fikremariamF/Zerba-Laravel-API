@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('foams', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->double('sold', 8, 2)->default(0);
-            $table->double('percentage', 5, 2)->default(0);
+            $table->double('sold',15, 2)->default(0);
+            $table->double('percentage', 3, 2)->default(0);
             $table->unsignedBigInteger('sprint_id'); // Assuming 'string_id' is an unsigned big integer
             $table->foreign('sprint_id')->references('id')->on('sprints'); // Replace 'strings' with the actual table name
             $table->timestamps();

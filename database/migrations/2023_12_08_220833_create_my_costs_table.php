@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('my_costs', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->double('spent', 8, 2)->default(0);
+            $table->double('spent', 15, 2)->default(0);
             $table->unsignedBigInteger('sprint_id'); // Assuming sprint_id is an unsigned big integer
             $table->foreign('sprint_id')->references('id')->on('sprints');
             $table->timestamps();
