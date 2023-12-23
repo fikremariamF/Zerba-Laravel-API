@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->double('sold',15, 2)->default(0);
-            $table->double('percentage', 3, 2)->default(0);
+            $table->double('percentage', 15, 2)->default(0);
             $table->unsignedBigInteger('sprint_id'); // Assuming 'string_id' is an unsigned big integer
             $table->foreign('sprint_id')->references('id')->on('sprints'); // Replace 'strings' with the actual table name
             $table->timestamps();

@@ -193,7 +193,7 @@ class SprintController extends Controller
                 'endDate' => substr($endDate, 0, 10),
                 'Mycost' => $myCost,
                 'MyProfit' => $myProfit,
-                'NetProfit' => $myCost - $myProfit
+                'NetProfit' => $myProfit - $myCost
             ]
         ]);
     }
@@ -251,7 +251,7 @@ class SprintController extends Controller
                 'endDate' => substr($endDate, 0, 10),
                 'Mycost' => $myCost,
                 'MyProfit' => $myProfit,
-                'NetProfit' => $myCost - $myProfit
+                'NetProfit' => $myProfit - $myCost
             ]
         ]);
     }
