@@ -44,13 +44,13 @@ class TotalController extends Controller
 
 
         // Check if the foam's sprint is active
-        $sprintIsActive = Sprint::where('id', $total->sprint_id)
-            ->where('is_active', true)
-            ->exists();
+        // $sprintIsActive = Sprint::where('id', $total->sprint_id)
+        //     ->where('is_active', true)
+        //     ->exists();
 
-        if (!$sprintIsActive) {
-            return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
-        }
+        // if (!$sprintIsActive) {
+        //     return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
+        // }
 
         $total->sold += $request->sold;
         $total->bergamod += $request->bergamod;

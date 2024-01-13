@@ -45,13 +45,13 @@ class CherkController extends Controller
 
 
         // Check if the foam's sprint is active
-        $sprintIsActive = Sprint::where('id', $cherk->sprint_id)
-            ->where('is_active', true)
-            ->exists();
+        // $sprintIsActive = Sprint::where('id', $cherk->sprint_id)
+        //     ->where('is_active', true)
+        //     ->exists();
 
-        if (!$sprintIsActive) {
-            return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
-        }
+        // if (!$sprintIsActive) {
+        //     return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
+        // }
 
         // Perform the calculations and update
         $cherk->sold += $request->sold;

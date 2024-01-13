@@ -46,13 +46,13 @@ class FoamController extends Controller
 
 
         // Check if the foam's sprint is active
-        $sprintIsActive = Sprint::where('id', $foam->sprint_id)
-            ->where('is_active', true)
-            ->exists();
+        // $sprintIsActive = Sprint::where('id', $foam->sprint_id)
+        //     ->where('is_active', true)
+        //     ->exists();
         
-        if (!$sprintIsActive) {
-            return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
-        }
+        // if (!$sprintIsActive) {
+        //     return response()->json(['error' => 'The foam is not associated with an active sprint.'], 400);
+        // }
 
         // Perform the calculations and update
         $foam->sold += $request->sold;
