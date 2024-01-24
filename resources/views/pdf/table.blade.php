@@ -33,6 +33,12 @@
         <td>{{ $foam->sold - $foam->percentage }}</td>
     </tr>
         @endforeach
+        <tr>
+        <td></td>
+        <td>{{ $data['totals']['foams']['sold'] }}</td>
+        <td>{{ $data['totals']['foams']['percentage'] }}</td>
+        <td>{{ $data['totals']['foams']['net'] }}</td>
+    </tr>
     </table>
 
     {{-- Cherks Table --}}
@@ -52,6 +58,12 @@
                 <td>{{ $foam->sold - $foam->percentage }}</td>
             </tr>
         @endforeach
+        <tr>
+        <td></td>
+        <td>{{ $data['totals']['cherks']['sold'] }}</td>
+        <td>{{ $data['totals']['cherks']['percentage'] }}</td>
+        <td>{{ $data['totals']['cherks']['net'] }}</td>
+    </tr>
     </table>
     {{-- Repeat similar structure for cherks, totals, my_costs, and ts_costs --}}
     <h2>Totals</h2>
@@ -72,6 +84,13 @@
                 <td>{{ $foam->sold - $foam->cherk - $foam->bergamod }}</td>
             </tr>
         @endforeach
+        <tr>
+        <td></td>
+        <td>{{ $data['totals']['totals']['sold'] }}</td>
+        <td>{{ $data['totals']['totals']['cherk'] }}</td>
+        <td>{{ $data['totals']['totals']['bergamod'] }}</td>
+        <td>{{ $data['totals']['totals']['net'] }}</td>
+    </tr>
     </table>
 
     <h2>My Costs</h2>
@@ -86,6 +105,10 @@
                 <td>{{ $foam->spent }}</td>
             </tr>
         @endforeach
+        <tr>
+        <td></td>
+        <td>{{ $data['totals']['mycost']['spent'] }}</td>
+    </tr>
     </table>
 
     <h2>Ts Costs</h2>
@@ -100,6 +123,10 @@
                 <td>{{ $foam->spent }}</td>
             </tr>
         @endforeach
+        <tr>
+        <td></td>
+        <td>{{ $data['totals']['tscost']['spent'] }}</td>
+    </tr>
     </table>
 
     {{-- Net Table --}}

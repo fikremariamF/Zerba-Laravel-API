@@ -168,9 +168,7 @@ class SprintController extends Controller
 
         $myProfit = $foams->sum('percentage') + $cherks->sum('percentage');
 
-        $initialDebt = $this->getInitialDebt($sprintId);
-
-        $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
+        $TotNet = $Bnet + $sprint->debt - ($Snet + $tsCost);
 
         $startDate = $sprint->startDate;
         $endDate = Carbon::parse($startDate)->addDays(10);
@@ -185,7 +183,7 @@ class SprintController extends Controller
                 'startDate' => substr($startDate, 0, 10),
                 'endDate' => substr($endDate, 0, 10),
                 'Bnet' => $Bnet,
-                'initialDebt' => $initialDebt,
+                'initialDebt' => $sprint->debt,
                 'Snet' => $Snet + $tsCost,
                 'TotNet' => $TotNet
             ],
@@ -197,23 +195,6 @@ class SprintController extends Controller
                 'NetProfit' => $myProfit - $myCost
             ]
         ]);
-    }
-
-    public function getInitialDebt($sprintId)
-    {
-        $initialDebt = 0;
-        while ($sprintId) {
-            $sprint = Sprint::where('id', '<', $sprintId)->where('is_active', false)->latest('id')->first();
-
-            if (!$sprint)
-                break;
-
-            $initialDebt += $sprint->TotNet;
-
-            $sprintId = $sprint->id;
-        }
-
-        return $initialDebt;
     }
 
     public function getPersonalExpenseData()
@@ -292,9 +273,8 @@ class SprintController extends Controller
             return $total->sold - $total->cherk - $total->bergamod;
         });
 
-        $initialDebt = $this->getInitialDebt($activeSprint->id);
         $tsCost = $tsCosts->sum('spent');
-        $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
+        $TotNet = $Bnet + $activeSprint->debt - ($Snet + $tsCost);
 
         $startDate = $activeSprint->startDate;
         $endDate = Carbon::parse($startDate)->addDays(10);
@@ -304,7 +284,7 @@ class SprintController extends Controller
                 'startDate' => substr($startDate, 0, 10),
                 'endDate' => substr($endDate, 0, 10),
                 'Bnet' => $Bnet,
-                'initialDebt' => $initialDebt,
+                'initialDebt' => $activeSprint->debt,
                 'Snet' => $Snet + $tsCost,
                 'TotNet' => $TotNet
             ],
@@ -343,9 +323,7 @@ class SprintController extends Controller
 
         $myProfit = $foams->sum('percentage') + $cherks->sum('percentage');
 
-        $initialDebt = $this->getInitialDebt($sprintId);
-
-        $TotNet = $Bnet + $initialDebt - ($Snet + $tsCost);
+        $TotNet = $Bnet + $sprint->debt - ($Snet + $tsCost);
 
         $startDate = $sprint->startDate;
         $endDate = Carbon::parse($startDate)->addDays(10);
@@ -359,7 +337,7 @@ class SprintController extends Controller
                 'startDate' => substr($startDate, 0, 10),
                 'endDate' => substr($endDate, 0, 10),
                 'Bnet' => $Bnet,
-                'initialDebt' => $initialDebt,
+                'initialDebt' => $sprint->debt,
                 'Snet' => $Snet + $tsCost,
                 'TotNet' => $TotNet
             ],
@@ -371,8 +349,59 @@ class SprintController extends Controller
                 'NetProfit' => $myProfit - $myCost
             ]
         ];
+
+        $totals = [
+            'foams' => [
+                'sold' => $foams->sum('sold'),
+                'percentage' => $foams->sum('percentage'),
+                'net' => $foams->sum(function ($foam) {
+                    return $foam->sold - $foam->percentage;
+                }),
+            ],
+            'cherks' => [
+                'sold' => $cherks->sum('sold'),
+                'percentage' => $cherks->sum('percentage'),
+                'net' => $cherks->sum(function ($foam) {
+                    return $foam->sold - $foam->percentage;
+                }),
+            ],
+            'totals' => [
+                'sold' => $totals->sum('sold'),
+                'cherk' => $totals->sum('cherk'),
+                'bergamod' => $totals->sum('bergamod'),
+                'net' => $totals->sum(function ($foam) {
+                    return $foam->sold - $foam->cherk - $foam->bergamod;
+                }),
+            ],
+            'my-costs' => [
+                'spent' => $myCosts->sum('spent'),
+            ],
+            'ts-costs' => [
+                'spent' => $tsCosts->sum('spent'),
+            ],
+        ];
+
+        // Add these totals to the $data array
+        $data['totals'] = $totals;
         $pdf = Pdf::loadView('pdf.table', ['data' => $data]);
         return $pdf->download('report.pdf');
+    }
+
+    public function updateDebt($id, Request $request)
+    {
+        $request->validate([
+            'debt' => 'required|numeric',
+        ]);
+        $sprint = Sprint::find($id);
+
+        if (!$sprint) {
+            return response()->json(['error' => 'Sprint not found.'], 404);
+        }
+
+        $sprint->debt += $request->debt;
+        $sprint->save();
+
+        return response()->json($sprint, 200);
     }
 }
 

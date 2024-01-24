@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('is_active')->default(true);
+            $table->double('debt', 15, 2)->default(0);
             $table->timestamps();
         });
     }

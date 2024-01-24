@@ -27,7 +27,8 @@ class Sprint extends Model
     protected $fillable = [
         'startDate',
         'user_id',
-        'is_active'
+        'is_active',
+        'debt'
     ];
 
     // Define relationship to User model
