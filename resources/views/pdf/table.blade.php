@@ -35,9 +35,9 @@
         @endforeach
         <tr>
         <td></td>
-        <td>{{ $data['totals']['foams']['sold'] }}</td>
-        <td>{{ $data['totals']['foams']['percentage'] }}</td>
-        <td>{{ $data['totals']['foams']['net'] }}</td>
+        <td>{{ $data['netals']['foams']['sold'] }}</td>
+        <td>{{ $data['netals']['foams']['percentage'] }}</td>
+        <td>{{ $data['netals']['foams']['net'] }}</td>
     </tr>
     </table>
 
@@ -60,9 +60,9 @@
         @endforeach
         <tr>
         <td></td>
-        <td>{{ $data['totals']['cherks']['sold'] }}</td>
-        <td>{{ $data['totals']['cherks']['percentage'] }}</td>
-        <td>{{ $data['totals']['cherks']['net'] }}</td>
+        <td>{{ $data['netals']['cherks']['sold'] }}</td>
+        <td>{{ $data['netals']['cherks']['percentage'] }}</td>
+        <td>{{ $data['netals']['cherks']['net'] }}</td>
     </tr>
     </table>
     {{-- Repeat similar structure for cherks, totals, my_costs, and ts_costs --}}
@@ -86,10 +86,10 @@
         @endforeach
         <tr>
         <td></td>
-        <td>{{ $data['totals']['totals']['sold'] }}</td>
-        <td>{{ $data['totals']['totals']['cherk'] }}</td>
-        <td>{{ $data['totals']['totals']['bergamod'] }}</td>
-        <td>{{ $data['totals']['totals']['net'] }}</td>
+        <td>{{ $data['netals']['total']['sold'] }}</td>
+        <td>{{ $data['netals']['total']['cherk'] }}</td>
+        <td>{{ $data['netals']['total']['bergamod'] }}</td>
+        <td>{{ $data['netals']['total']['net'] }}</td>
     </tr>
     </table>
 
@@ -107,7 +107,7 @@
         @endforeach
         <tr>
         <td></td>
-        <td>{{ $data['totals']['mycost']['spent'] }}</td>
+        <td>{{ $data['netals']['my-costs']['spent'] }}</td>
     </tr>
     </table>
 
@@ -125,7 +125,7 @@
         @endforeach
         <tr>
         <td></td>
-        <td>{{ $data['totals']['tscost']['spent'] }}</td>
+        <td>{{ $data['netals']['ts-costs']['spent'] }}</td>
     </tr>
     </table>
 

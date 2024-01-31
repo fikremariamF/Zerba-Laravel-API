@@ -13,6 +13,7 @@ use App\Models\TsCost;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class SprintController extends Controller
 {
@@ -350,7 +351,7 @@ class SprintController extends Controller
             ]
         ];
 
-        $totals = [
+        $nets = [
             'foams' => [
                 'sold' => $foams->sum('sold'),
                 'percentage' => $foams->sum('percentage'),
@@ -365,7 +366,7 @@ class SprintController extends Controller
                     return $foam->sold - $foam->percentage;
                 }),
             ],
-            'totals' => [
+            'total' => [
                 'sold' => $totals->sum('sold'),
                 'cherk' => $totals->sum('cherk'),
                 'bergamod' => $totals->sum('bergamod'),
@@ -382,7 +383,8 @@ class SprintController extends Controller
         ];
 
         // Add these totals to the $data array
-        $data['totals'] = $totals;
+        $data['netals'] = $nets;
+        Log::info('Data array', ['data' => $data]);
         $pdf = Pdf::loadView('pdf.table', ['data' => $data]);
         return $pdf->download('report.pdf');
     }
