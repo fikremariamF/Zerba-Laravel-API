@@ -9,6 +9,8 @@ use App\Http\Controllers\CherkController;
 use App\Http\Controllers\MyCostController;
 use App\Http\Controllers\TsCostController;
 use App\Http\Controllers\TotalController;
+use Illuminate\Support\Facades\Artisan;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,11 +26,20 @@ use App\Http\Controllers\TotalController;
 //     return $request->user();
 // });
 
-Route::post("register", [ApiController::class, "register"]);
-Route::post("login", [ApiController::class, "login"]);
+Route::post("register", [ApiController::class, "register"])->middleware('cors');
+Route::post("login", [ApiController::class, "login"])->middleware('cors');
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    Artisan::call('view:clear');
+    // Add any other cache clear commands you need to execute
+
+    return "Cache is cleared";
+});
 
 Route::group([
-    "middleware" => ["auth:api"]
+    "middleware" => ["auth:api", "cors"]
 ], function () {
 
     Route::get("profile", [ApiController::class, "profile"]);

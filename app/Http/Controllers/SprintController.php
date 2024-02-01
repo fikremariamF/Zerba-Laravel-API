@@ -65,7 +65,7 @@ class SprintController extends Controller
                 'date' => $currentDate,
                 'sprint_id' => $sprint->id,
             ]);
-
+            
             // Create Total
             Total::create([
                 'date' => $currentDate,
