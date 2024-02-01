@@ -26,8 +26,8 @@ use Illuminate\Support\Facades\Artisan;
 //     return $request->user();
 // });
 
-Route::post("register", [ApiController::class, "register"])->middleware('cors');
-Route::post("login", [ApiController::class, "login"])->middleware('cors');
+Route::post("register", [ApiController::class, "register"]);
+Route::post("login", [ApiController::class, "login"]);
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
@@ -39,7 +39,7 @@ Route::get('/clear-cache', function () {
 });
 
 Route::group([
-    "middleware" => ["auth:api", "cors"]
+    "middleware" => ["auth:api"]
 ], function () {
 
     Route::get("profile", [ApiController::class, "profile"]);
