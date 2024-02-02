@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['*'],
+    'paths' => ['*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://zebra-frontend-react-3293.vercel.app'],
+    'allowed_origins' => ['http://localhost:3000', 'https://zebra-frontend-react-3293.vercel.app','https://zfr-hkziqlymf-fikremariams-projects.vercel.app', '*'],
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +29,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];
