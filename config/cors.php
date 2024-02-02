@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://192.168.241.70:3000', 'https://zebra-frontend-react-3293.vercel.app','https://zfr-hkziqlymf-fikremariams-projects.vercel.app', '*'],
+    'allowed_origins' => ['http://10.10.0.193/:3000', 'https://zebra-frontend-react-3293.vercel.app','https://zfr-hkziqlymf-fikremariams-projects.vercel.app', '*'],
 
     'allowed_origins_patterns' => [],
 
