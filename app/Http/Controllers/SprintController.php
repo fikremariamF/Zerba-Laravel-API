@@ -86,7 +86,8 @@ class SprintController extends Controller
 
     public function getInactiveSprints()
     {
-        $inactiveSprints = Sprint::where('is_active', false)
+        $user = auth()->user();
+        $inactiveSprints = Sprint::where('is_active', false)->where('user_id', $user->id)
             ->get()
             ->makeHidden(['created_at', 'updated_at']) // Optionally hide timestamps
             ->toArray();
@@ -134,7 +135,9 @@ class SprintController extends Controller
 
     public function getSprintData($sprintId)
     {
-        $sprint = Sprint::find($sprintId);
+        $user = auth()->user();
+        $sprint = Sprint::where('user_id', $user->id)->where('id', $sprintId)
+            ->first();
         if (!$sprint) {
             return response()->json(['error' => 'No sprint found for the user.'], 404);
         }
@@ -290,7 +293,9 @@ class SprintController extends Controller
 
     public function generatePDF($sprintId)
     {
-        $sprint = Sprint::find($sprintId);
+        $user = auth()->user();
+        $sprint = Sprint::where('user_id', $user->id)->where('id', $sprintId)
+            ->first();
         if (!$sprint) {
             return response()->json(['error' => 'No sprint found for the user.'], 404);
         }
