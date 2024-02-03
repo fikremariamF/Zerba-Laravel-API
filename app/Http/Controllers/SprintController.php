@@ -39,7 +39,7 @@ class SprintController extends Controller
             return response()->json($validator->errors(), 400);
         }
         $date = Carbon::parse($request->input('startDate'))->format('Y-m-d');
-
+        DB::beginTransaction();
         $sprint = Sprint::create([
             'startDate' => $date,
             'user_id' => $user->id
@@ -51,42 +51,37 @@ class SprintController extends Controller
 
         $startDate = Carbon::parse($sprint->startDate);
 
-        for ($i = 0; $i < 10; $i++) {
-            $currentDate = $startDate->copy()->addDays($i);
+        $bulkData = [];
+        $totals = [];
 
-            // Create Foam
-            Foam::create([
-                'date' => $currentDate,
-                'sprint_id' => $sprint->id,
-            ]);
+        try {
+            for ($i = 0; $i < 10; $i++) {
+                $currentDate = $startDate->copy()->addDays($i);
+                $bulkData[] = ['date' => $currentDate, 'sprint_id' => $sprint->id];
+            }
 
-            // Create Cherk
-            $cherk = Cherk::create([
-                'date' => $currentDate,
-                'sprint_id' => $sprint->id,
-            ]);
-            
-            // Create Total
-            Total::create([
-                'date' => $currentDate,
-                'cherk_id' => $cherk->id,
-                'sprint_id' => $sprint->id,
-            ]);
+            Foam::insert($bulkData);
+            Cherk::insert($bulkData);
+            MyCost::insert($bulkData);
+            TsCost::insert($bulkData);
 
-            // Create MyCost
-            MyCost::create([
-                'date' => $currentDate,
-                'sprint_id' => $sprint->id,
-            ]);
+            $cherks = Cherk::where('sprint_id', $sprint->id)->orderBy('id')->get();
 
-            // Create TsCost
-            TsCost::create([
-                'date' => $currentDate,
-                'sprint_id' => $sprint->id,
-            ]);
+            foreach ($cherks as $index => $cherk) {
+                $totals[] = [
+                    'date' => $bulkData[$index]['date'],
+                    'cherk_id' => $cherk->id,
+                    'sprint_id' => $sprint->id
+                ];
+            }
+
+            Total::insert($totals);
+            DB::commit();
+            return response()->json($sprint, 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Failed to create sprint.', 'message' => $e->getMessage()], 500);
         }
-
-        return response()->json($sprint, 201);
     }
 
     public function getInactiveSprints()
@@ -239,7 +234,8 @@ class SprintController extends Controller
         ]);
     }
 
-    public function getSprintExpenseData(){
+    public function getSprintExpenseData()
+    {
         $user = auth()->user();
 
         $activeSprintExists = Sprint::where('is_active', true)
@@ -279,7 +275,7 @@ class SprintController extends Controller
 
         $startDate = $activeSprint->startDate;
         $endDate = Carbon::parse($startDate)->addDays(10);
-        
+
         return response()->json([
             'net' => [
                 'startDate' => substr($startDate, 0, 10),
