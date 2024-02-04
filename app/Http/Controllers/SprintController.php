@@ -224,7 +224,7 @@ class SprintController extends Controller
         $myCost = $myCosts->sum('spent');
 
         $startDate = $activeSprint->startDate;
-        $endDate = Carbon::parse($startDate)->addDays(10);
+        $endDate = Carbon::parse($startDate)->addDays(9);
 
         return response()->json([
             'PersonalProfit' => [
@@ -277,7 +277,7 @@ class SprintController extends Controller
         $TotNet = $Bnet + $activeSprint->debt - ($Snet + $tsCost);
 
         $startDate = $activeSprint->startDate;
-        $endDate = Carbon::parse($startDate)->addDays(10);
+        $endDate = Carbon::parse($startDate)->addDays(9);
 
         return response()->json([
             'net' => [
